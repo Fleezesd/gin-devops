@@ -25,6 +25,7 @@ func main() {
 
 	// 日志配置
 	logger := common.NewZapLogger(sc.LogLevel, sc.LogFilePath)
+	sc.Logger = logger
 	logger.Info("读取Server配置",
 		zap.String("httpAddr", sc.HttpAddr),
 	)
