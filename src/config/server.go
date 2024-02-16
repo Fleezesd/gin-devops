@@ -7,7 +7,9 @@ import (
 )
 
 type ServerConfig struct {
-	HttpAddr string `yaml:"http_addr"`
+	HttpAddr    string `yaml:"http_addr"`
+	LogLevel    string `yaml:"log_level"`
+	LogFilePath string `yaml:"log_file_path"`
 }
 
 func LoadServer(filename string) (*ServerConfig, error) {

@@ -2,10 +2,11 @@ package main
 
 import (
 	"flag"
-	"fmt"
 
+	"github.com/fleezesd/gin-devops/src/common"
 	"github.com/fleezesd/gin-devops/src/config"
 	"github.com/fleezesd/gin-devops/src/web"
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -17,14 +18,19 @@ func main() {
 	flag.Parse()
 
 	// 读取配置
-	serverConfig, err := config.LoadServer(configFile)
+	sc, err := config.LoadServer(configFile)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("server配置:%v\n", serverConfig)
+
+	// 日志配置
+	logger := common.NewZapLogger(sc.LogLevel, sc.LogFilePath)
+	logger.Info("读取Server配置",
+		zap.String("httpAddr", sc.HttpAddr),
+	)
 
 	// 启动Http Gin
-	err = web.StartHttp(serverConfig)
+	err = web.StartHttp(sc)
 	if err != nil {
 		panic(err)
 	}
