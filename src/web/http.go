@@ -11,12 +11,13 @@ import (
 	"github.com/gin-contrib/requestid"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
+	ginprometheus "github.com/zsais/go-gin-prometheus"
 )
 
 // StartHttp 单独启动Gin
 func StartHttp(sc *config.ServerConfig) error {
 	// 配置模式
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
 	gin.DisableConsoleColor()
 
 	r := gin.New()
@@ -30,6 +31,9 @@ func StartHttp(sc *config.ServerConfig) error {
 	r.Use(ginzap.RecoveryWithZap(sc.Logger, true))
 	// requestId 中间件
 	r.Use(requestid.New())
+	// prometheus 中间件
+	p := ginprometheus.NewPrometheus("gin_devops")
+	p.Use(r)
 
 	// 注册路由
 	view.ConfigRoutes(r)
