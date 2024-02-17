@@ -2,6 +2,7 @@ package common
 
 import (
 	"os"
+	"time"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -36,13 +37,13 @@ func NewZapLogger(logLevel string, logFilePath string) *zap.Logger {
 		TimeKey:        "time",
 		LevelKey:       "level",
 		NameKey:        "name",
-		CallerKey:      "line",                                                 // 调用者
-		MessageKey:     "msg",                                                  // 内容msg
-		FunctionKey:    "func",                                                 // 函数func
-		StacktraceKey:  "stacktrace",                                           // 堆栈stackTrace
-		LineEnding:     zapcore.DefaultLineEnding,                              // 换行字符 \n
-		EncodeLevel:    zapcore.LowercaseLevelEncoder,                          // 小写字符
-		EncodeTime:     zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05.000"), // 时间格式
+		CallerKey:      "line",                                    // 调用者
+		MessageKey:     "msg",                                     // 内容msg
+		FunctionKey:    "func",                                    // 函数func
+		StacktraceKey:  "stacktrace",                              // 堆栈stackTrace
+		LineEnding:     zapcore.DefaultLineEnding,                 // 换行字符 \n
+		EncodeLevel:    zapcore.LowercaseLevelEncoder,             // 小写字符
+		EncodeTime:     zapcore.TimeEncoderOfLayout(time.RFC3339), // 时间格式
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 		EncodeCaller:   zapcore.FullCallerEncoder,
 		EncodeName:     zapcore.FullNameEncoder,

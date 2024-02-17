@@ -28,6 +28,8 @@ func main() {
 	sc.Logger = logger
 	logger.Info("读取Server配置",
 		zap.String("httpAddr", sc.HttpAddr),
+		zap.String("logLevel", sc.LogLevel),
+		zap.String("logFilePath", sc.LogFilePath),
 	)
 
 	// 启动Http Gin

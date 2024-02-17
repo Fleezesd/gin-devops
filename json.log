@@ -1,3 +1,0 @@
-{"level":"info","time":"2024-02-16 16:34:19.233","line":"/Users/jiazhibo/github/gin-devops/cmd/server/main.go:28","func":"main.main","msg":"读取Server配置","httpAddr":"0.0.0.0:8080"}
-{"level":"info","time":"2024-02-16 16:34:57.802","line":"/Users/jiazhibo/github/gin-devops/cmd/server/main.go:28","func":"main.main","msg":"读取Server配置","httpAddr":"0.0.0.0:8080"}
-{"level":"info","time":"2024-02-16 16:35:13.147","line":"/Users/jiazhibo/github/gin-devops/src/web/middleware/time_cost.go:21","func":"github.com/fleezesd/gin-devops/src/web.StartHttp.TimeCost.func1","msg":"耗时中间件打印结果","url":"/ping","耗时":0.000157834}
