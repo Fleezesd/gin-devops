@@ -1,3 +1,8 @@
 http_addr: 0.0.0.0:8080
 log_level: DEBUG
 log_file_path: json.log
+jwt:
+  signing_key: gin_devops
+  expires_time: 5m
+  buffer_time: 1h
+  issuer: fleezesd
