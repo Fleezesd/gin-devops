@@ -31,3 +31,10 @@ func UserLogin(c *gin.Context) {
 	}
 	models.TokenNext(dbUser, c)
 }
+
+// GetUserInfoAfterLogin 登录后获取用户信息 来自于 jwt Header
+func GetUserInfoAfterLogin(c *gin.Context) {
+	// 拿到 UserClaim
+	user := c.MustGet(common.GIN_CTX_JWT_USER).(*models.User)
+	common.OkWithDetailed(user, "ok", c)
+}

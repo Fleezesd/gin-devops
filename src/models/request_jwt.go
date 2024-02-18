@@ -41,3 +41,23 @@ func GenJwtToken(dbUser *User, sc *config.ServerConfig) (string, error) {
 	//使用指定的secret签名 获得加盐后的token
 	return token.SignedString([]byte(sc.JWT.SigningKey))
 }
+
+// ParseToken 解析Token
+func ParseToken(jwtLongToken string, sc *config.ServerConfig) (*UserCustomClaims, error) {
+	tokenClaims, err := jwt.ParseWithClaims(
+		jwtLongToken,
+		&UserCustomClaims{},
+		func(token *jwt.Token) (i interface{}, e error) {
+			return []byte(sc.JWT.SigningKey), nil
+		},
+	)
+	if err != nil {
+		sc.Logger.Error("根据长 tokenString 解析 jwt错误",
+			zap.Error(err))
+		return nil, err
+	}
+	if claims, ok := tokenClaims.Claims.(*UserCustomClaims); ok && tokenClaims.Valid {
+		return claims, nil
+	}
+	return nil, err
+}

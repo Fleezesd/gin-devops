@@ -4,5 +4,5 @@ log_file_path: json.log
 jwt:
   signing_key: gin_devops
   expires_time: 5m
-  buffer_time: 1h
+  buffer_time: 1m
   issuer: fleezesd
