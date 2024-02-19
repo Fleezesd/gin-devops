@@ -5,6 +5,7 @@ import (
 
 	"github.com/fleezesd/gin-devops/src/common"
 	"github.com/fleezesd/gin-devops/src/config"
+	"github.com/fleezesd/gin-devops/src/models"
 	"github.com/fleezesd/gin-devops/src/web"
 	"go.uber.org/zap"
 )
@@ -31,6 +32,15 @@ func main() {
 		zap.String("logLevel", sc.LogLevel),
 		zap.String("logFilePath", sc.LogFilePath),
 	)
+
+	// 初始化数据库
+	if err := models.InitDB(sc.Mysql.DSN); err != nil {
+		logger.Error("初始化gorm db错误",
+			zap.Error(err),
+		)
+		return
+	}
+	logger.Info("初始化gorm db连接成功")
 
 	// 启动Http Gin
 	err = web.StartHttp(sc)
