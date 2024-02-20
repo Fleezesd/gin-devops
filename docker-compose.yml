@@ -12,6 +12,6 @@ services:
       - MYSQL_PASSWORD=1234
       - TZ=Asia/Shanghai
     volumes:
-      - ./sql:/docker-entrypoint-initdb.d/
+      - ./sql:/docker-entrypoint-initdb.d/  # 容器启动时，会自动执行/docker-entrypoint-initdb.d/目录下的所有.sql、.sql.gz、.sh脚本文件 后期若migrate不用了采用该sql形式
     ports:
       - "3306:3306"
