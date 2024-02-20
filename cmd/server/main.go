@@ -51,6 +51,9 @@ func main() {
 	}
 	logger.Info("gorm db同步表结构成功")
 
+	// 测试注册和密码加盐 后续删除
+	models.MockUserRegister(sc)
+
 	// 启动Http Gin
 	err = web.StartHttp(sc)
 	if err != nil {

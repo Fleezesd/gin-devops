@@ -9,4 +9,4 @@ jwt:
 
 #CREATE DATABASE IF NOT EXISTS gin_devops default charset utf8 COLLATE utf8_general_ci;
 mysql:
-  dsn: "root:1234@tcp(127.0.0.1:3306)/gin_devops?charset=utf8&parseTime=True&loc=Local"   # 先暂时这么写 后面考虑docker-compose逐步K8S
+  dsn: "fleezesd:1234@tcp(127.0.0.1:3306)/gin_devops?charset=utf8&parseTime=True&loc=Local"   # 先暂时这么写 后面考虑docker-compose逐步转到K8S

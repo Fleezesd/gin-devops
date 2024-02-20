@@ -24,11 +24,14 @@ func UserLogin(c *gin.Context) {
 			return
 		}
 	}
-	// 生成jwt
-	dbUser := &models.User{
-		Username: user.Username,
-		Password: user.Password,
+
+	// 检测用户
+	dbUser, err := models.CheckUserPassword(&user)
+	if err != nil {
+		common.FailWithMessage(err.Error(), c)
+		return
 	}
+	// 生成jwt
 	models.TokenNext(dbUser, c)
 }
 
