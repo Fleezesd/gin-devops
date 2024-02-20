@@ -34,13 +34,22 @@ func main() {
 	)
 
 	// 初始化数据库
-	if err := models.InitDB(sc.Mysql.DSN); err != nil {
+	if err = models.InitDB(sc.Mysql.DSN); err != nil {
 		logger.Error("初始化gorm db错误",
 			zap.Error(err),
 		)
 		return
 	}
 	logger.Info("初始化gorm db连接成功")
+
+	// 同步表结构
+	if err = models.MigrateTable(); err != nil {
+		logger.Error("gorm db同步表结构错误",
+			zap.Error(err),
+		)
+		return
+	}
+	logger.Info("gorm db同步表结构成功")
 
 	// 启动Http Gin
 	err = web.StartHttp(sc)

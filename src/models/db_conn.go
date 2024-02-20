@@ -18,3 +18,10 @@ func InitDB(dsn string) error {
 
 	return nil
 }
+
+// MigrateTable 自动建表的逻辑
+func MigrateTable() error {
+	return Db.AutoMigrate(
+		&User{},
+	)
+}
