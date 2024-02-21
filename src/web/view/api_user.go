@@ -1,14 +1,19 @@
 package view
 
 import (
+	"fmt"
+
 	"github.com/fleezesd/gin-devops/src/common"
+	"github.com/fleezesd/gin-devops/src/config"
 	"github.com/fleezesd/gin-devops/src/models"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"go.uber.org/zap"
 )
 
 func UserLogin(c *gin.Context) {
 	var user models.UserLoginRequest
+	sc := c.MustGet(common.GIN_CTX_CONFIG_CONFIG).(*config.ServerConfig)
 	// 校验json字段
 	if err := c.ShouldBindJSON(&user); err != nil {
 		common.FailWithMessage(err.Error(), c)
@@ -28,7 +33,10 @@ func UserLogin(c *gin.Context) {
 	// 检测用户
 	dbUser, err := models.CheckUserPassword(&user)
 	if err != nil {
-		common.FailWithMessage(err.Error(), c)
+		sc.Logger.Error("登陆失败! 用户名不存在或者密码错误!",
+			zap.Error(err),
+		)
+		common.FailWithMessage(fmt.Sprintf("用户名不存在或者密码错误:%v", err.Error()), c)
 		return
 	}
 	// 生成jwt

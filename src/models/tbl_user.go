@@ -1,6 +1,9 @@
 package models
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/fleezesd/gin-devops/src/common"
 	"gorm.io/gorm"
 )
@@ -21,9 +24,12 @@ func CheckUserPassword(req *UserLoginRequest) (*User, error) {
 	dbUser := User{
 		Username: req.Username,
 	}
-	err := Db.First(&dbUser).Error
+	err := Db.Where("username = ?", dbUser.Username).Preload("Roles").First(&dbUser).Error
 	if err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("用户名不存在")
+		}
+		return nil, fmt.Errorf("数据库错误: %w", err)
 	}
 	// 跟db中加密的密码对比
 	if err = common.BcryptCheck(req.Password, dbUser.Password); err != nil {
