@@ -16,6 +16,6 @@ func ConfigRoutes(r *gin.Engine) {
 	afterLoginApiGroup := r.Group("/api")
 	afterLoginApiGroup.Use(middleware.JWTAuthMiddleware())
 	{
-		afterLoginApiGroup.GET("/userinfo", GetUserInfoAfterLogin)
+		afterLoginApiGroup.GET("/getUserInfo", GetUserInfoAfterLogin)
 	}
 }
