@@ -45,7 +45,20 @@ func UserLogin(c *gin.Context) {
 
 // GetUserInfoAfterLogin 登录后获取用户信息 来自于 jwt Header
 func GetUserInfoAfterLogin(c *gin.Context) {
+	sc := c.MustGet(common.GIN_CTX_CONFIG_CONFIG).(*config.ServerConfig)
 	// 拿到 UserClaim
-	user := c.MustGet(common.GIN_CTX_JWT_USER).(*models.User)
-	common.OkWithDetailed(user, "ok", c)
+	userName := c.MustGet(common.GIN_CTX_JWT_USER_NAME).(string)
+	dbUser, err := models.GetUserByUserName(userName)
+	if err != nil {
+		sc.Logger.Error("获取用户失败! 用户名不存在!",
+			zap.Error(err),
+		)
+		common.FailWithMessage(err.Error(), c)
+		return
+	}
+	common.OkWithDetailed(dbUser, "ok", c)
+}
+
+func GetPermCode(c *gin.Context) {
+	common.OkWithDetailed([]string{"2000", "4000", "6000"}, "ok", c)
 }

@@ -1,4 +1,4 @@
-http_addr: 0.0.0.0:8080
+http_addr: localhost:8080
 log_level: DEBUG
 log_file_path: json.log
 jwt:

@@ -29,10 +29,23 @@ func InitDB(dsn string) error {
 func MigrateTable() error {
 	return Db.AutoMigrate(
 		&User{},
+		&Role{},
+		&Menu{},
 	)
 }
 
 func MockUserRegister(sc *config.ServerConfig) {
+	menus := []*Menu{
+		{
+			Name:      "System",
+			Icon:      "ion:settings-outline",
+			Title:     "系统管理",
+			Component: "LAYOUT",
+			Redirect:  "/system/account",
+			Path:      "/system",
+		},
+	}
+
 	user1 := User{
 		Username: "vben",
 		Password: "123456",
@@ -44,6 +57,11 @@ func MockUserRegister(sc *config.ServerConfig) {
 			{
 				RoleName:  "管理员",
 				RoleValue: "admin",
+				Menus:     menus,
+			},
+			{
+				RoleName:  "前端权限管理员",
+				RoleValue: "frontAdmin",
 			},
 		},
 	}

@@ -6,7 +6,7 @@ import (
 )
 
 func ConfigRoutes(r *gin.Engine) {
-	base := r.Group("/basic-api")
+	base := r.Group("")
 	{
 		base.GET("/ping", ping)
 		base.POST("/login", UserLogin)
@@ -17,5 +17,11 @@ func ConfigRoutes(r *gin.Engine) {
 	afterLoginApiGroup.Use(middleware.JWTAuthMiddleware())
 	{
 		afterLoginApiGroup.GET("/getUserInfo", GetUserInfoAfterLogin)
+		afterLoginApiGroup.GET("/getPermCode", GetPermCode)
 	}
+	systemApiGroup := afterLoginApiGroup.Group("system")
+	{
+		systemApiGroup.GET("/getMenuList", GetMenuList)
+	}
+
 }

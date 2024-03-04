@@ -8,6 +8,7 @@ import (
 	"github.com/fleezesd/gin-devops/src/config"
 	"github.com/fleezesd/gin-devops/src/web/middleware"
 	"github.com/fleezesd/gin-devops/src/web/view"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/requestid"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
@@ -34,6 +35,8 @@ func StartHttp(sc *config.ServerConfig) error {
 	// prometheus 中间件
 	p := ginprometheus.NewPrometheus("gin_devops")
 	p.Use(r)
+	// cors 跨域中间件
+	r.Use(cors.Default())
 
 	// 注册路由
 	view.ConfigRoutes(r)

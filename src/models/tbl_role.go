@@ -11,4 +11,5 @@ type Role struct {
 	HomePath  string  `json:"homePath" gorm:"comment:登陆后的默认首页"`
 	Status    string  `json:"status" gorm:"default:1;comment:角色是否被冻结 1正常 2冻结"`
 	Users     []*User `json:"users" gorm:"many2many:user_roles;"`
+	Menus     []*Menu `json:"menus" gorm:"many2many:role_menus;"` // 多对多
 }

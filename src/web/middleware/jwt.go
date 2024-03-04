@@ -52,10 +52,10 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 				common.Result500(7, gin.H{}, fmt.Sprintf("parseToken 解析token包含的信息错误:%v", err.Error()), c)
 				c.Abort()
 			}
-			c.Header("new-token", newToken)	// 前端配合 下次请求带新token
+			c.Header("new-token", newToken) // 前端配合 下次请求带新token
 		}
 		// 4. claim 对象传递下去
-		c.Set(common.GIN_CTX_JWT_USER, userClaims.User)
+		c.Set(common.GIN_CTX_JWT_USER_NAME, userClaims.Username)
 		c.Next()
 	}
 }
