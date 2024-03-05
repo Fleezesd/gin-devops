@@ -42,7 +42,7 @@ func GetUserByUserName(userName string) (*User, error) {
 	dbUser := User{
 		Username: userName,
 	}
-	err := Db.Where("username = ?", dbUser.Username).Preload("Roles").First(&dbUser).Error
+	err := Db.Where("username = ?", dbUser.Username).Preload("Roles.Menus").First(&dbUser).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errors.New("用户名不存在")

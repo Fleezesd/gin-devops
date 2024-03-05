@@ -66,10 +66,9 @@ func MockUserRegister(sc *config.ServerConfig) {
 		},
 	}
 	user1.Password = common.BcryptHash(user1.Password)
+	// 保存用户信息   关联role menu会自动migrate到各自表中
 	if err := Db.Create(&user1).Error; err != nil {
-		sc.Logger.Error("模拟用户注册失败",
-			zap.Error(err),
-		)
+		sc.Logger.Error("模拟用户注册失败", zap.Error(err))
 		return
 	}
 	sc.Logger.Info("模拟用户注册成功!")

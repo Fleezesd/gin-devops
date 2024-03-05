@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 /*
 {
@@ -48,4 +52,19 @@ type MenuMeta struct {
 	ShowMenu        bool   `json:"showMenu" gorm:"-"`
 	HideMenu        bool   `json:"hideMenu" gorm:"-"`
 	IgnoreKeepAlive bool   `json:"ignoreKeepAlive" gorm:"-"`
+}
+
+func GetMenuById(id int) (*Menu, error) {
+
+	var dbMenu Menu
+
+	err := Db.Where("id = ?", id).Preload("Roles").First(&dbMenu).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("菜单不存在")
+		}
+		return nil, fmt.Errorf("数据库错误:%w", err)
+	}
+	return &dbMenu, nil
+
 }

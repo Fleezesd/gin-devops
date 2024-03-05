@@ -1,6 +1,8 @@
 package view
 
 import (
+	"strconv"
+
 	"github.com/fleezesd/gin-devops/src/common"
 	"github.com/fleezesd/gin-devops/src/config"
 	"github.com/fleezesd/gin-devops/src/models"
@@ -20,10 +22,59 @@ func GetMenuList(c *gin.Context) {
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
-	menuList := []*models.Menu{}
+
+	var (
+		fatherMenuMap  = make(map[uint]*models.Menu)
+		uniqueChildMap = make(map[uint]*models.Menu)
+	)
+
 	roles := dbUser.Roles
 	for _, role := range roles {
-		menuList = append(menuList, role.Menus...)
+		sc.Logger.Info("role的menuList详情",
+			zap.Any("menu", role.Menus),
+		)
+		// 去重 menu
+		for _, menu := range role.Menus {
+			menu.Meta = &models.MenuMeta{}
+			menu.Meta.Icon = menu.Icon
+			menu.Meta.Title = menu.Title
+			menu.Key = menu.ID
+			menu.Value = menu.ID
+			if menu.ParentMenu == "" {
+				fatherMenuMap[menu.ID] = menu
+			}
+
+			// 判断是否重复子菜单
+			_, ok := uniqueChildMap[menu.ID]
+			if ok {
+				continue
+			}
+			// 否则塞入
+			uniqueChildMap[menu.ID] = menu
+
+			// 子菜单录入父菜单
+			fatherMenuId, _ := strconv.Atoi(menu.ParentMenu)
+			fatherMenu, err := models.GetMenuById(fatherMenuId)
+			if err != nil {
+				sc.Logger.Error("menu寻找错误", zap.Error(err))
+				continue
+			}
+			load, ok := fatherMenuMap[fatherMenu.ID]
+			if !ok {
+				fatherMenuMap[fatherMenu.ID] = fatherMenu
+				fatherMenu.Children = make([]*models.Menu, 0)
+				fatherMenu.Children = append(fatherMenu.Children, menu)
+			} else {
+				load.Children = append(load.Children, menu)
+			}
+		}
 	}
-	common.OkWithDetailed(menuList, "获取菜单列表成功", c)
+
+	finalMenus := make([]*models.Menu, 0)
+
+	for _, menu := range fatherMenuMap {
+		finalMenus = append(finalMenus, menu)
+	}
+
+	common.OkWithDetailed(finalMenus, "获取菜单列表成功", c)
 }
