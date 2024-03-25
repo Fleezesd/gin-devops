@@ -1,10 +1,14 @@
 package models
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
 	"github.com/fleezesd/gin-devops/src/common"
+	"github.com/uptrace/opentelemetry-go-extra/otelzap"
+	"go.opentelemetry.io/otel"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -20,19 +24,20 @@ type User struct {
 	Roles      []*Role `json:"roles" gorm:"many2many:user_roles;"`
 }
 
-func CheckUserPassword(req *UserLoginRequest) (*User, error) {
+var tracer = otel.Tracer("gin-devops-models")
+
+func CheckUserPassword(logger *otelzap.Logger, ctx context.Context, req *UserLoginRequest) (*User, error) {
 	dbUser := User{
 		Username: req.Username,
 	}
-	err := Db.Where("username = ?", dbUser.Username).Preload("Roles").First(&dbUser).Error
+	err := Db.WithContext(ctx).Where("username = ?", dbUser.Username).Preload("Roles").First(&dbUser).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, errors.New("用户名不存在")
-		}
-		return nil, fmt.Errorf("数据库错误: %w", err)
+		logger.Ctx(ctx).Error("数据库错误", zap.Error(err))
+		return nil, err
 	}
 	// 跟db中加密的密码对比
 	if err = common.BcryptCheck(req.Password, dbUser.Password); err != nil {
+		logger.Ctx(ctx).Error("密码错误", zap.Error(err))
 		return nil, err
 	}
 	return &dbUser, nil

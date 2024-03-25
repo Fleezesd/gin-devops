@@ -12,11 +12,14 @@ import (
 
 func GetMenuList(c *gin.Context) {
 	// 拿到用户的role列表 遍历role列表 拿到menuList
-	userName := c.MustGet(common.GIN_CTX_JWT_USER_NAME).(string)
+	var (
+		userName = c.MustGet(common.GIN_CTX_JWT_USER_NAME).(string)
+		ctx      = c.Request.Context()
+	)
 	sc := c.MustGet(common.GIN_CTX_CONFIG_CONFIG).(*config.ServerConfig)
 	dbUser, err := models.GetUserByUserName(userName)
 	if err != nil {
-		sc.Logger.Error("通过token解析的用户名,获取用户失败! 用户名不存在!",
+		sc.Logger.Ctx(ctx).Error("通过token解析的用户名,获取用户失败! 用户名不存在!",
 			zap.Error(err),
 		)
 		common.FailWithMessage(err.Error(), c)
@@ -30,7 +33,7 @@ func GetMenuList(c *gin.Context) {
 
 	roles := dbUser.Roles
 	for _, role := range roles {
-		sc.Logger.Info("role的menuList详情",
+		sc.Logger.Ctx(ctx).Info("role的menuList详情",
 			zap.Any("menu", role.Menus),
 		)
 		// 去重 menu
@@ -56,7 +59,7 @@ func GetMenuList(c *gin.Context) {
 			fatherMenuId, _ := strconv.Atoi(menu.ParentMenu)
 			fatherMenu, err := models.GetMenuById(fatherMenuId)
 			if err != nil {
-				sc.Logger.Error("menu寻找错误", zap.Error(err))
+				sc.Logger.Ctx(ctx).Error("menu寻找错误", zap.Error(err))
 				continue
 			}
 			load, ok := fatherMenuMap[fatherMenu.ID]

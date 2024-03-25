@@ -7,11 +7,12 @@ import (
 
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
+	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
-func NewGinZapLogger(logger *zap.Logger) gin.HandlerFunc {
+func NewGinZapLogger(logger *otelzap.Logger) gin.HandlerFunc {
 	return ginzap.GinzapWithConfig(logger, &ginzap.Config{
 		TimeFormat: time.RFC3339,
 		UTC:        true,
@@ -22,13 +23,6 @@ func NewGinZapLogger(logger *zap.Logger) gin.HandlerFunc {
 			if requestID := c.Writer.Header().Get("X-Request-Id"); requestID != "" {
 				fields = append(fields, zap.String("request_id", requestID))
 			}
-
-			// log traceID and spanID
-			// 后续 OpenTelemetry添加上再补在zap上
-			//if trace.SpanFromContext(c.Request.Context()).SpanContext().IsValid() {
-			//	fields = append(fields, zap.String("trace_id", trace.SpanFromContext(c.Request.Context()).SpanContext().TraceID().String()))
-			//	fields = append(fields, zap.String("span_id", trace.SpanFromContext(c.Request.Context()).SpanContext().SpanID().String()))
-			//}
 
 			// log request body
 			var body []byte

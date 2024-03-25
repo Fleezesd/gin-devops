@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/fleezesd/gin-devops/src/common"
 	"github.com/fleezesd/gin-devops/src/config"
+	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -20,8 +21,10 @@ func InitDB(dsn string) error {
 	if err != nil {
 		return err
 	}
+	if err = db.Use(otelgorm.NewPlugin()); err != nil {
+		return err
+	}
 	Db = db
-
 	return nil
 }
 

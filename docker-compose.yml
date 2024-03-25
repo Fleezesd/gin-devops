@@ -15,3 +15,55 @@ services:
       - ./sql:/docker-entrypoint-initdb.d/  # 容器启动时，会自动执行/docker-entrypoint-initdb.d/目录下的所有.sql、.sql.gz、.sh脚本文件 后期若migrate不用了采用该sql形式
     ports:
       - "3306:3306"
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.7
+    restart: on-failure
+    environment:
+      CLICKHOUSE_DB: uptrace
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'localhost:8123/ping']
+      interval: 1s
+      timeout: 1s
+      retries: 30
+    volumes:
+      - ch_data1:/var/lib/clickhouse
+    ports:
+      - '8123:8123'
+      - '9000:9000'
+
+  postgres:
+    image: postgres:15-alpine
+    restart: on-failure
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: uptrace
+      POSTGRES_PASSWORD: uptrace
+      POSTGRES_DB: uptrace
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U uptrace -d uptrace']
+      interval: 1s
+      timeout: 1s
+      retries: 30
+    volumes:
+      - 'pg_data2:/var/lib/postgresql/data/pgdata'
+    ports:
+      - '5432:5432'
+
+  uptrace:
+    image: 'uptrace/uptrace:1.7.0-rc.1'
+    #image: 'uptrace/uptrace-dev:latest'
+    restart: on-failure
+    volumes:
+      - ./uptrace.yml:/etc/uptrace/uptrace.yml
+    #environment:
+    #  - DEBUG=2
+    ports:
+      - '14317:14317'
+      - '14318:14318'
+
+
+
+volumes:
+  ch_data1:
+  pg_data2:

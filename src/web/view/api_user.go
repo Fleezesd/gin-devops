@@ -12,10 +12,15 @@ import (
 )
 
 func UserLogin(c *gin.Context) {
-	var user models.UserLoginRequest
-	sc := c.MustGet(common.GIN_CTX_CONFIG_CONFIG).(*config.ServerConfig)
-	// 校验json字段
+	var (
+		user models.UserLoginRequest
+		ctx  = c.Request.Context()
+		sc   = c.MustGet(common.GIN_CTX_CONFIG_CONFIG).(*config.ServerConfig)
+	)
 	if err := c.ShouldBindJSON(&user); err != nil {
+		sc.Logger.Ctx(ctx).Error("登陆失败! 请求参数错误!",
+			zap.Error(err),
+		)
 		common.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -31,9 +36,9 @@ func UserLogin(c *gin.Context) {
 	}
 
 	// 检测用户
-	dbUser, err := models.CheckUserPassword(&user)
+	dbUser, err := models.CheckUserPassword(sc.Logger, ctx, &user)
 	if err != nil {
-		sc.Logger.Error("登陆失败! 用户名不存在或者密码错误!",
+		sc.Logger.Ctx(ctx).Error("登陆失败! 用户名不存在或者密码错误!",
 			zap.Error(err),
 		)
 		common.FailWithMessage(fmt.Sprintf("用户名不存在或者密码错误:%v", err.Error()), c)
@@ -45,12 +50,15 @@ func UserLogin(c *gin.Context) {
 
 // GetUserInfoAfterLogin 登录后获取用户信息 来自于 jwt Header
 func GetUserInfoAfterLogin(c *gin.Context) {
-	sc := c.MustGet(common.GIN_CTX_CONFIG_CONFIG).(*config.ServerConfig)
+	var (
+		sc  = c.MustGet(common.GIN_CTX_CONFIG_CONFIG).(*config.ServerConfig)
+		ctx = c.Request.Context()
+	)
 	// 拿到 UserClaim
 	userName := c.MustGet(common.GIN_CTX_JWT_USER_NAME).(string)
 	dbUser, err := models.GetUserByUserName(userName)
 	if err != nil {
-		sc.Logger.Error("获取用户失败! 用户名不存在!",
+		sc.Logger.Ctx(ctx).Error("获取用户失败! 用户名不存在!",
 			zap.Error(err),
 		)
 		common.FailWithMessage(err.Error(), c)

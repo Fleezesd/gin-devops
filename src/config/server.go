@@ -4,18 +4,18 @@ import (
 	"os"
 	"time"
 
-	"go.uber.org/zap"
+	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"gopkg.in/yaml.v3"
 	"gorm.io/driver/mysql"
 )
 
 type ServerConfig struct {
-	HttpAddr    string        `yaml:"http_addr"`
-	LogLevel    string        `yaml:"log_level"`
-	LogFilePath string        `yaml:"log_file_path"`
-	Logger      *zap.Logger   `yaml:"-"`
-	JWT         *JWT          `yaml:"jwt"`
-	Mysql       *mysql.Config `yaml:"mysql"` // 直接用gorm中的mysql driver
+	HttpAddr    string          `yaml:"http_addr"`
+	LogLevel    string          `yaml:"log_level"`
+	LogFilePath string          `yaml:"log_file_path"`
+	Logger      *otelzap.Logger `yaml:"-"`
+	JWT         *JWT            `yaml:"jwt"`
+	Mysql       *mysql.Config   `yaml:"mysql"` // 直接用gorm中的mysql driver
 }
 
 type JWT struct {
