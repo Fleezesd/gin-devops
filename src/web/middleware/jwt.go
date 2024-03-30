@@ -19,14 +19,12 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		if authHeaderString == "" {
 			common.Req401WithWithDetailed(gin.H{"reload": true}, "未登录或非法访问没有Authorization的header", c)
 			c.Abort()
-			return
 		}
 		// authHeaderString格式校验： Bearer {{ token }}
 		parts := strings.SplitN(authHeaderString, " ", 2)
 		if !(len(parts) == 2 && parts[0] == "Bearer") {
 			common.Req401WithWithDetailed(gin.H{"reload": true}, "请求头中的auth格式错误", c)
 			c.Abort()
-			return
 		}
 
 		// 2. 拿到token 做jwt解析
@@ -35,7 +33,6 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		if err != nil {
 			common.Req401WithWithDetailed(gin.H{"reload": true}, fmt.Sprintf("parseToken 解析token包含的信息错误:%v", err.Error()), c)
 			c.Abort()
-			return
 		}
 
 		// 3. 验证token 是否过期

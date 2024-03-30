@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 /*
@@ -55,9 +56,7 @@ type MenuMeta struct {
 }
 
 func GetMenuById(id int) (*Menu, error) {
-
 	var dbMenu Menu
-
 	err := Db.Where("id = ?", id).Preload("Roles").First(&dbMenu).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -66,5 +65,25 @@ func GetMenuById(id int) (*Menu, error) {
 		return nil, fmt.Errorf("数据库错误:%w", err)
 	}
 	return &dbMenu, nil
+}
 
+func GetMenuAll() (menus []*Menu, err error) {
+	err = Db.Find(&menus).Error
+	return
+}
+
+func (m *Menu) UpdateOne() error {
+	return Db.Updates(m).Error
+}
+
+func (m *Menu) CreateOne() error {
+	return Db.Create(m).Error
+}
+
+func (m *Menu) DeleteOne() error {
+	// Select(clause.Associations) 用于自动预加载 Menu 结构体的所有关联
+	// Unscoped() 用于执行硬删除，这将永久性地从数据库中删除记录
+	// Delete(m) 删除与 Menu 实例 m 的主键匹配的记录
+	// Error 用于返回在删除操作过程中可能发生的任何错误。如果没有发生错误，它将返回 nil
+	return Db.Select(clause.Associations).Unscoped().Delete(m).Error
 }

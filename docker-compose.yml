@@ -4,7 +4,7 @@ services:
   mysql:
     container_name: mysql
     image: mysql:latest
-    restart: always
+    restart: on-failure
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=gin_devops
@@ -13,10 +13,12 @@ services:
       - TZ=Asia/Shanghai
     volumes:
       - ./sql:/docker-entrypoint-initdb.d/  # 容器启动时，会自动执行/docker-entrypoint-initdb.d/目录下的所有.sql、.sql.gz、.sh脚本文件 后期若migrate不用了采用该sql形式
+      - mysql_data:/var/lib/mysql                     
     ports:
       - "3306:3306"
 
   clickhouse:
+    container_name: clickhouse
     image: clickhouse/clickhouse-server:23.7
     restart: on-failure
     environment:
@@ -33,6 +35,7 @@ services:
       - '9000:9000'
 
   postgres:
+    container_name: postgres
     image: postgres:15-alpine
     restart: on-failure
     environment:
@@ -51,19 +54,18 @@ services:
       - '5432:5432'
 
   uptrace:
+    container_name: uptrace
     image: 'uptrace/uptrace:1.7.0-rc.1'
-    #image: 'uptrace/uptrace-dev:latest'
     restart: on-failure
     volumes:
       - ./uptrace.yml:/etc/uptrace/uptrace.yml
-    #environment:
-    #  - DEBUG=2
     ports:
       - '14317:14317'
       - '14318:14318'
-
-
+## 暂时这样 uptrace去拿tempo比较费劲 grafana的思路暂时取消 抽空研究sigNoz
 
 volumes:
+  mysql_data:
   ch_data1:
   pg_data2:
+

@@ -4,6 +4,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/fleezesd/gin-devops/src/common"
+	"github.com/gin-gonic/gin"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"gopkg.in/yaml.v3"
 	"gorm.io/driver/mysql"
@@ -54,4 +56,8 @@ func LoadServer(filename string) (*ServerConfig, error) {
 	}
 
 	return cfg, nil
+}
+
+func GetServerConfig(c *gin.Context) *ServerConfig {
+	return c.MustGet(common.GIN_CTX_CONFIG_CONFIG).(*ServerConfig)
 }

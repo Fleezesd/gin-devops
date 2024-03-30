@@ -21,3 +21,12 @@ type UserLoginResponse struct {
 	Token     string `json:"token"`
 	ExpiresAt int64  `json:"expiresAt"` // 为了方便前端 直接拿到过期时间
 }
+
+type AccountExistRequest struct {
+	Account string `json:"account"`
+}
+
+type ChangePasswordRequest struct {
+	PasswordOld string `json:"passwordOld"`
+	PasswordNew string `json:"passwordNew"`
+}
