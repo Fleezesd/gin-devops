@@ -28,6 +28,14 @@ func ConfigRoutes(r *gin.Engine) {
 		systemApiGroup.POST("/updateMenu", UpdateMenu)
 		systemApiGroup.POST("/createMenu", CreateMenu)
 		systemApiGroup.DELETE("/deleteMenu/:id", DeleteMenu)
+
+		// 角色相关
+		systemApiGroup.GET("/getRoleListAll", GetRoleListAll)
+		systemApiGroup.POST("/createRole", CreateRole)
+		systemApiGroup.POST("/updateRole", UpdateRole)
+		systemApiGroup.POST("/setRoleStatus", SetRoleStatus)
+		systemApiGroup.DELETE("/deleteRole/:id", DeleteRole)
+
 		// 用户相关
 		systemApiGroup.POST("/createAccount", CreateAccount)
 		systemApiGroup.POST("/accountExist", AccountExist)

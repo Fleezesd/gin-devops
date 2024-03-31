@@ -403,7 +403,7 @@ func MockUserRegister(sc *config.ServerConfig) {
 
 	dbRole, _ := GetRoleByRoleValue("super")
 	dbRole.Apis = apis
-	err = dbRole.UpdateApis(apis)
+	err = dbRole.UpdateApis(apis, sc)
 	sc.Logger.Info("更新api结果", zap.Any("err", err))
 	sc.Logger.Info("模拟用户注册成功!")
 

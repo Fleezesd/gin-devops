@@ -344,7 +344,7 @@ func GetAllUserAndRoles(c *gin.Context) {
 		return
 	}
 
-	roles, err := models.GetRollAll()
+	roles, err := models.GetRoleAll()
 	if err != nil {
 		sc.Logger.Error("去数据库中拿所有的角色错误",
 			zap.Error(err),

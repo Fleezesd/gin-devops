@@ -1,6 +1,11 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+)
 
 type Api struct {
 	gorm.Model
@@ -13,4 +18,32 @@ type Api struct {
 	Key      uint    `json:"key"  gorm:"-"`
 	Value    uint    `json:"value"  gorm:"-"`
 	Children []*Api  `json:"children" gorm:"-"`
+}
+
+func GetApiById(id int) (*Api, error) {
+	var dbObj Api
+	err := Db.Where("id = ?", id).Preload("Roles").First(&dbObj).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("api不存在")
+		}
+		return nil, fmt.Errorf("数据库错误:%w", err)
+	}
+	return &dbObj, nil
+}
+
+func (obj *Api) DeleteOne() error {
+
+	return Db.Select(clause.Associations).Unscoped().Delete(obj).Error
+
+}
+
+func (obj *Api) CreateOne() error {
+	return Db.Create(obj).Error
+
+}
+
+func (obj *Api) UpdateOne() error {
+	return Db.Updates(obj).Error
+
 }
