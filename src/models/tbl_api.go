@@ -32,10 +32,13 @@ func GetApiById(id int) (*Api, error) {
 	return &dbObj, nil
 }
 
+func GetApiAll() (objs []*Api, err error) {
+	err = Db.Find(&objs).Error
+	return
+}
+
 func (obj *Api) DeleteOne() error {
-
 	return Db.Select(clause.Associations).Unscoped().Delete(obj).Error
-
 }
 
 func (obj *Api) CreateOne() error {

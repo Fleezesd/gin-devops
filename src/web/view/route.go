@@ -22,21 +22,7 @@ func ConfigRoutes(r *gin.Engine) {
 	}
 	systemApiGroup := afterLoginApiGroup.Group("system")
 	{
-		// 菜单相关
-		systemApiGroup.GET("/getMenuList", GetMenuList)
-		systemApiGroup.GET("/getMenuListAll", GetMenuListAll)
-		systemApiGroup.POST("/updateMenu", UpdateMenu)
-		systemApiGroup.POST("/createMenu", CreateMenu)
-		systemApiGroup.DELETE("/deleteMenu/:id", DeleteMenu)
-
-		// 角色相关
-		systemApiGroup.GET("/getRoleListAll", GetRoleListAll)
-		systemApiGroup.POST("/createRole", CreateRole)
-		systemApiGroup.POST("/updateRole", UpdateRole)
-		systemApiGroup.POST("/setRoleStatus", SetRoleStatus)
-		systemApiGroup.DELETE("/deleteRole/:id", DeleteRole)
-
-		// 用户相关
+		// 用户相关 account
 		systemApiGroup.POST("/createAccount", CreateAccount)
 		systemApiGroup.POST("/accountExist", AccountExist)
 		systemApiGroup.POST("/updateAccount", UpdateAccount)
@@ -44,6 +30,26 @@ func ConfigRoutes(r *gin.Engine) {
 		systemApiGroup.GET("/getAccountList", GetAccountList)
 		systemApiGroup.GET("/getAllUserAndRoles", GetAllUserAndRoles)
 		systemApiGroup.DELETE("/deleteAccount/:id", DeleteAccount)
+
+		// 角色相关 role
+		systemApiGroup.GET("/getRoleListAll", GetRoleListAll)
+		systemApiGroup.POST("/createRole", CreateRole)
+		systemApiGroup.POST("/updateRole", UpdateRole)
+		systemApiGroup.POST("/setRoleStatus", SetRoleStatus)
+		systemApiGroup.DELETE("/deleteRole/:id", DeleteRole)
+
+		// 菜单相关 menu
+		systemApiGroup.GET("/getMenuList", GetMenuList)
+		systemApiGroup.GET("/getMenuListAll", GetMenuListAll)
+		systemApiGroup.POST("/updateMenu", UpdateMenu)
+		systemApiGroup.POST("/createMenu", CreateMenu)
+		systemApiGroup.DELETE("/deleteMenu/:id", DeleteMenu)
+
+		// api 相关
+		systemApiGroup.GET("/getApiList", GetApiList)
+		systemApiGroup.DELETE("/deleteApi/:id", DeleteApi)
+		systemApiGroup.POST("/createApi", CreateApi)
+		systemApiGroup.POST("/updateApi", UpdateApi)
 	}
 
 }
